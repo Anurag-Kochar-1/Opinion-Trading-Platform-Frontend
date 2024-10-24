@@ -81,7 +81,7 @@ export const useStore = create<Store>()(
             onRehydrateStorage: () => (state) => {
                 state?.setHasUserIdHydrated(true);
             },
-            
+
         }
     )
 );

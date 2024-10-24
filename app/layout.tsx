@@ -5,6 +5,7 @@ import "./globals.css";
 import { Header } from "@/components/layout/header";
 import { SignUpFormModal } from "@/components/auth/signup-form-modal";
 import { TanstackQueryClientProvider } from "@/providers/tanstack-query-client";
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -36,6 +37,7 @@ export default function RootLayout({
           <Header />
           {children}
           <Toaster />
+          <ReactQueryDevtools buttonPosition="bottom-left" initialIsOpen={false} />
           {/* Modals */}
           <SignUpFormModal />
         </body>
