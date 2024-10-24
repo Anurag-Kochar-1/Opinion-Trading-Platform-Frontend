@@ -84,3 +84,32 @@ body {
     margin: 0;
   }
 }
+@layer base {
+  @keyframes flash-blue {
+    0%,
+    100% {
+      background-color: rgb(219 234 254);
+    }
+    50% {
+      background-color: rgb(147 197 253);
+    }
+  }
+
+  @keyframes flash-red {
+    0%,
+    100% {
+      background-color: rgb(254 226 226);
+    }
+    50% {
+      background-color: rgb(252 165 165);
+    }
+  }
+
+  .animate-flash-blue {
+    animation: flash-blue 0.5s ease-out;
+  }
+
+  .animate-flash-red {
+    animation: flash-red 0.5s ease-out;
+  }
+}

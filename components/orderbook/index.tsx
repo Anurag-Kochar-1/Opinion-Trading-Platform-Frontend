@@ -1,7 +1,10 @@
-import React from "react";
+import React from 'react'
+import { Card } from '../ui/card'
 
-const OrderBook = () => {
-  return <div>OrderBook</div>;
-};
+export const Orderbook = () => {
+  return (
+    <Card className='w-full h-auto min-h-72'>
 
-export default OrderBook;
+    </Card>
+  )
+}
