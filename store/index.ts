@@ -30,14 +30,16 @@ export const DUMMY_EVENT_ORDERBOOK_DATA: EventOrderBook = {
 interface StoreState {
     orderBook: EventOrderBook | null;
     isSignUpModalOpen: boolean;
+    isOnrampBalanceModalOpen: boolean;
     userId: string;
     hasUserIdHydrated: boolean;
 }
 
-// Separate actions interface
+
 interface StoreActions {
     setOrderBook: (orderBook: EventOrderBook | null) => void;
     setIsSignUpModalOpen: (val: boolean) => void;
+    setIsOnrampBalanceModalOpen: (val: boolean) => void;
     setUserId: (userId: string) => void;
     removeUserId: () => void;
     setHasUserIdHydrated: (state: boolean) => void;
@@ -48,6 +50,7 @@ type Store = StoreState & StoreActions;
 const initialState: StoreState = {
     orderBook: DUMMY_EVENT_ORDERBOOK_DATA,
     isSignUpModalOpen: false,
+    isOnrampBalanceModalOpen: false,
     userId: '',
     hasUserIdHydrated: false,
 };
@@ -71,6 +74,10 @@ export const useStore = create<Store>()(
 
             setHasUserIdHydrated: (state) =>
                 set({ hasUserIdHydrated: state }),
+
+            setIsOnrampBalanceModalOpen(val) {
+                set({ isOnrampBalanceModalOpen: val })
+            },
         }),
         {
             name: 'auth-storage',

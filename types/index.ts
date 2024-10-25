@@ -12,3 +12,11 @@ export type EventOrderBook = {
     id: string,
     orderbook: OrderBook
 }
+
+
+export type ApiResponse<T = undefined> = {
+    statusMessage: string
+    statusCode: number
+    statusType: "SUCCESS" | "ERROR"
+    data?: T
+}
