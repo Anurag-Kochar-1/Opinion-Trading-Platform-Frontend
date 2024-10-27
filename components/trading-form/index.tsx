@@ -16,9 +16,12 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MinusIcon, PlusIcon } from "lucide-react";
 import { MAX_PRICE, TradingFormValues, tradingSchema } from "./schema";
 import { cn } from "@/lib/utils";
+import { useAddOrderMutation } from "@/services/order/mutations";
+import { useStore } from "@/store";
 
 export const TradingForm: FC = () => {
   const [activeTab, setActiveTab] = useState<"yes" | "no">("yes");
+  const userId = useStore((state) => state.userId);
 
   const form = useForm<TradingFormValues>({
     resolver: zodResolver(tradingSchema),
@@ -70,12 +73,16 @@ export const TradingForm: FC = () => {
 
   const { youPut, youGet } = calculateTotals();
 
+  const addOrderMutation = useAddOrderMutation();
+
   const onSubmit = (values: TradingFormValues) => {
-    console.log({
-      ...values,
-      type: activeTab,
-      youPut,
-      youGet,
+    addOrderMutation.mutate({
+      price: values.price,
+      quantity: values.quantity,
+      stockSymbol: "TATA",
+      stockType: activeTab === "yes" ? "yes" : "no",
+      orderType: "buy",
+      userId,
     });
   };
 
