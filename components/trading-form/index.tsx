@@ -96,17 +96,11 @@ export const TradingForm: FC = () => {
               className="w-full"
               onValueChange={(value) => setActiveTab(value as "yes" | "no")}
             >
-              <TabsList className="grid grid-cols-2 w-full">
-                <TabsTrigger
-                  value="yes"
-                  className="data-[state=active]:bg-blue-500 data-[state=active]:text-white h-10 font-semibold rounded-l-xl"
-                >
+              <TabsList className="grid grid-cols-2 w-full rounded-xl h-14">
+                <TabsTrigger value="yes" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white font-semibold rounded-l-xl py-3.5">
                   Yes ₹4.5
                 </TabsTrigger>
-                <TabsTrigger
-                  value="no"
-                  className="data-[state=active]:bg-red-500 data-[state=active]:text-white h-10 font-semibold rounded-r-xl"
-                >
+                <TabsTrigger value="no" className="data-[state=active]:bg-red-500 data-[state=active]:text-white font-semibold rounded-r-xl py-3.5">
                   No ₹5.5
                 </TabsTrigger>
               </TabsList>

@@ -1,9 +1,7 @@
-import React from 'react'
+import { redirect } from "next/navigation";
 
 const Page = () => {
-  return (
-    <div>all events</div>
-  )
-}
+  redirect("/events/TESLA");
+};
 
-export default Page
+export default Page;

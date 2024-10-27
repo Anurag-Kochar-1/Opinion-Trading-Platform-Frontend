@@ -48,7 +48,7 @@ export const Header = () => {
 
   return (
     <div className="w-full border-b border-border sticky top-0 left-0 right-0 px-4 lg:px-6 bg-background">
-      <div className="container mx-auto flex justify-between items-center h-14">
+      <div className="container mx-auto flex justify-between items-center h-16">
         <Logo />
 
         <div className="flex justify-center items-center gap-2">
@@ -60,10 +60,10 @@ export const Header = () => {
             ) : isUserBalanceError ? (
               userBalanceError?.message
             ) : (
-              <Button variant={"secondary"}>
-                {" "}
-                <Wallet size={15} /> ₹ {userBalance?.data?.balance ?? "-"}{" "}
-              </Button>
+              <div className="px-4 py-2 bg-muted flex justify-center items-center gap-2">
+                <Wallet size={15} />{" "}
+                <span>₹ {userBalance?.data?.balance ?? "-"}</span>
+              </div>
             )
           ) : (
             <Button onClick={() => setIsSignUpModalOpen(true)}>
