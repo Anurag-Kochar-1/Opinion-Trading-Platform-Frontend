@@ -9,5 +9,5 @@ export const addOrder = async (body: {
     price: number
     quantity: number
 }): Promise<ApiResponse> => {
-    return (await api.post(`/order/${body.orderType}`)).data
+    return (await api.post(`/order/${body.orderType}`, body)).data
 }

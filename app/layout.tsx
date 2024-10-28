@@ -7,6 +7,7 @@ import { SignUpFormModal } from "@/components/auth/signup-form-modal";
 import { TanstackQueryClientProvider } from "@/providers/tanstack-query-client";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { OnrampBalanceFormModal } from "@/components/user/onramp-balance-form-modal";
+import { WebSocketProvider } from "@/providers/web-socket";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -31,21 +32,23 @@ export default function RootLayout({
   return (
     <html lang="en">
       <TanstackQueryClientProvider>
-        <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        >
-          <Header />
-          {children}
-          <Toaster />
-          <ReactQueryDevtools
-            buttonPosition="bottom-left"
-            initialIsOpen={false}
-          />
-          {/* ***************** Modals ***************** */}
+        <WebSocketProvider>
+          <body
+            className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+          >
+            <Header />
+            {children}
+            <Toaster />
+            <ReactQueryDevtools
+              buttonPosition="bottom-left"
+              initialIsOpen={false}
+            />
+            {/* ***************** Modals ***************** */}
 
-          <SignUpFormModal />
-          <OnrampBalanceFormModal />
-        </body>
+            <SignUpFormModal />
+            <OnrampBalanceFormModal />
+          </body>
+        </WebSocketProvider>
       </TanstackQueryClientProvider>
     </html>
   );

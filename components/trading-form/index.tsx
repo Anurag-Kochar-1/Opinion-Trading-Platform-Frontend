@@ -18,8 +18,11 @@ import { MAX_PRICE, TradingFormValues, tradingSchema } from "./schema";
 import { cn } from "@/lib/utils";
 import { useAddOrderMutation } from "@/services/order/mutations";
 import { useStore } from "@/store";
+import { useParams } from "next/navigation";
 
 export const TradingForm: FC = () => {
+  const { id: stockSymbol } = useParams();
+  const [type, setType] = useState<"place" | "exit">("place");
   const [activeTab, setActiveTab] = useState<"yes" | "no">("yes");
   const userId = useStore((state) => state.userId);
 
@@ -76,12 +79,13 @@ export const TradingForm: FC = () => {
   const addOrderMutation = useAddOrderMutation();
 
   const onSubmit = (values: TradingFormValues) => {
+    console.log(`type`, type);
     addOrderMutation.mutate({
       price: values.price,
       quantity: values.quantity,
-      stockSymbol: "TATA",
+      stockSymbol: stockSymbol.toString(),
       stockType: activeTab === "yes" ? "yes" : "no",
-      orderType: "buy",
+      orderType: type === "place" ? "buy" : "sell",
       userId,
     });
   };
@@ -91,16 +95,45 @@ export const TradingForm: FC = () => {
       <CardContent className="pt-6">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            {/* ========== type ========== */}
+            <Tabs
+              defaultValue="place"
+              className="w-full"
+              onValueChange={(value) => setType(value as "place" | "exit")}
+            >
+              <TabsList className="grid grid-cols-2 w-full rounded-xl h-14">
+                <TabsTrigger
+                  value="place"
+                  className="font-semibold rounded-l-xl py-3.5"
+                >
+                  Place
+                </TabsTrigger>
+                <TabsTrigger
+                  value="exit"
+                  className="font-semibold rounded-r-xl py-3.5"
+                >
+                  Exit
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
+
+            {/* ========== stock type ========== */}
             <Tabs
               defaultValue="yes"
               className="w-full"
               onValueChange={(value) => setActiveTab(value as "yes" | "no")}
             >
               <TabsList className="grid grid-cols-2 w-full rounded-xl h-14">
-                <TabsTrigger value="yes" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white font-semibold rounded-l-xl py-3.5">
+                <TabsTrigger
+                  value="yes"
+                  className="data-[state=active]:bg-blue-500 data-[state=active]:text-white font-semibold rounded-l-xl py-3.5"
+                >
                   Yes ₹4.5
                 </TabsTrigger>
-                <TabsTrigger value="no" className="data-[state=active]:bg-red-500 data-[state=active]:text-white font-semibold rounded-r-xl py-3.5">
+                <TabsTrigger
+                  value="no"
+                  className="data-[state=active]:bg-red-500 data-[state=active]:text-white font-semibold rounded-r-xl py-3.5"
+                >
                   No ₹5.5
                 </TabsTrigger>
               </TabsList>
@@ -204,18 +237,20 @@ export const TradingForm: FC = () => {
                 )}
               />
 
-              <div className="flex justify-between text-sm mx-auto w-[70%] py-2">
-                <div className="space-y-1">
-                  <p className="text-muted-foreground">You put</p>
-                  <p className="font-medium">₹{youPut.toFixed(1)}</p>
+              {type === "place" ? (
+                <div className="flex justify-between text-sm mx-auto w-[70%] py-2">
+                  <div className="space-y-1">
+                    <p className="text-muted-foreground">You put</p>
+                    <p className="font-medium">₹{youPut.toFixed(1)}</p>
+                  </div>
+                  <div className="space-y-1 text-right">
+                    <p className="text-muted-foreground">You get</p>
+                    <p className="font-medium text-green-600">
+                      ₹{youGet.toFixed(1)}
+                    </p>
+                  </div>
                 </div>
-                <div className="space-y-1 text-right">
-                  <p className="text-muted-foreground">You get</p>
-                  <p className="font-medium text-green-600">
-                    ₹{youGet.toFixed(1)}
-                  </p>
-                </div>
-              </div>
+              ) : null}
 
               <Button
                 type="submit"
@@ -225,7 +260,7 @@ export const TradingForm: FC = () => {
                   "bg-red-500 hover:bg-red-600": activeTab === "no",
                 })}
               >
-                Place order
+                {type == "place" ? "Place" : "Exit"} order
               </Button>
             </div>
           </form>
