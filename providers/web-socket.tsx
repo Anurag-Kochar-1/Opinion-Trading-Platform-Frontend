@@ -1,5 +1,6 @@
 "use client";
-import { useUser } from "@/services/user/queries";
+import { useOrderbookByStockSymbol, useUser } from "@/services/user/queries";
+import { OrderBookEntry } from "@/types";
 import React, { createContext, useContext, useEffect, useState } from "react";
 
 export interface WebSocketMessage {
@@ -13,7 +14,7 @@ export interface StockSubscription {
 }
 
 interface WebSocketContextType {
-  messages: WebSocketMessage[];
+  messages: Array<OrderBookEntry>;
   sendMessage: (message: string) => void;
   isConnected: boolean;
 }
@@ -26,10 +27,14 @@ const WebSocketContext = createContext<WebSocketContextType>({
 
 export function WebSocketProvider({ children }: { children: React.ReactNode }) {
   const [socket, setSocket] = useState<WebSocket | null>(null);
-  const [messages, setMessages] = useState<WebSocketMessage[]>([]);
+  const [messages, setMessages] = useState<Array<OrderBookEntry>>([]);
   const [isConnected, setIsConnected] = useState(false);
 
   const { data: user, isLoading: isUserLoading } = useUser();
+  const { data: orderBookData, isLoading: isOrderBookDataLoading } =
+    useOrderbookByStockSymbol({
+      stockSymbol: "TESLA",
+    });
 
   const createWebSocketConnection = () => {
     const ws = new WebSocket("ws://localhost:5000");
@@ -42,6 +47,7 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
         type: "subscribe",
         stockSymbol: "TESLA",
       };
+
       ws.send(JSON.stringify(subscriptionMessage));
     });
 
@@ -99,6 +105,18 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.statusCode, isUserLoading]);
+
+  useEffect(() => {
+    if (orderBookData?.statusType === "SUCCESS") {
+      if (isUserLoading || isOrderBookDataLoading) return;
+
+      if (user?.statusCode === 200 || orderBookData.statusCode === 200) {
+        setMessages((prev) => [...prev, orderBookData.data!]);
+        console.log(orderBookData.data);
+      }
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.statusCode, isOrderBookDataLoading, isUserLoading]);
 
   const sendMessage = (message: string) => {
     if (socket?.readyState === WebSocket.OPEN) {

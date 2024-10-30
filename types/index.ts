@@ -1,18 +1,16 @@
-export type Order = {
-    price: number;
-    quantity: number;
+type Order = Record<string, number>; // string is userId, and number is quantity
+
+type OrderLevel = {
+    total: number;
+    orders: Order;
 };
 
-export type OrderBook = {
-    BUY: Order[];
-    SELL: Order[];
+type OrderBookSide = Record<string, OrderLevel>; // string is price
+
+export type OrderBookEntry = {
+    yes: OrderBookSide;
+    no: OrderBookSide;
 };
-
-export type EventOrderBook = {
-    id: string,
-    orderbook: OrderBook
-}
-
 
 export type ApiResponse<T = undefined> = {
     statusMessage: string

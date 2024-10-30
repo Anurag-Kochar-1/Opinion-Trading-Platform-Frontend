@@ -1,5 +1,5 @@
 import { api } from "@/lib/axios"
-import { ApiResponse } from "@/types"
+import { ApiResponse, OrderBookEntry } from "@/types"
 
 export const addOrder = async (body: {
     stockType: "yes" | "no",
@@ -10,4 +10,8 @@ export const addOrder = async (body: {
     quantity: number
 }): Promise<ApiResponse> => {
     return (await api.post(`/order/${body.orderType}`, body)).data
+}
+
+export const getOrderBookByStockSymbol = async ({ stockSymbol }: { stockSymbol: string }): Promise<ApiResponse<OrderBookEntry>> => {
+    return (await api.get(`/orderbook/${stockSymbol}`)).data
 }

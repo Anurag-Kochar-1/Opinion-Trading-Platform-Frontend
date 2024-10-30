@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query"
 import { getUser, getUserBalance } from "./apis"
 import { useStore } from "@/store"
+import { getOrderBookByStockSymbol } from "../order/apis"
 
 export const useUserBalance = () => {
     const userId = useStore((state) => state.userId)
@@ -24,4 +25,14 @@ export const useUser = () => {
         enabled: !!userId,
         retry: false,
     })
+}
+
+export const useOrderbookByStockSymbol = ({ stockSymbol }: { stockSymbol: string }) => {
+    const userId = useStore((state) => state.userId)
+    return useQuery({
+        queryKey: ['ORDERBOOK', { stockSymbol }],
+        queryFn: () => getOrderBookByStockSymbol({ stockSymbol }),
+        enabled: !!userId && !!stockSymbol,
+    })
+
 }
