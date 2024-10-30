@@ -1,5 +1,5 @@
 "use client";
-import { FC, useState } from "react";
+import { FC, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Card, CardContent } from "@/components/ui/card";
@@ -37,6 +37,10 @@ export const TradingForm: FC = () => {
   const { watch, setValue } = form;
   const price = watch("price");
   const quantity = watch("quantity");
+
+  const totalCost = useMemo(() => {
+    return price * quantity;
+  }, [price, quantity]);
 
   const adjustPrice = (increment: boolean) => {
     const currentPrice = Number(price);
@@ -251,6 +255,9 @@ export const TradingForm: FC = () => {
                   </div>
                 </div>
               ) : null}
+
+
+              <p className="font-medium"> Total order {type === "place" ? "cost" : "value"} will be {totalCost} </p>
 
               <Button
                 type="submit"
