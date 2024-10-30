@@ -1,4 +1,5 @@
 "use client";
+import { useUser } from "@/services/user/queries";
 import React, { createContext, useContext, useEffect, useState } from "react";
 
 export interface WebSocketMessage {
@@ -28,7 +29,9 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
   const [messages, setMessages] = useState<WebSocketMessage[]>([]);
   const [isConnected, setIsConnected] = useState(false);
 
-  useEffect(() => {
+  const { data: user, isLoading: isUserLoading } = useUser();
+
+  const createWebSocketConnection = () => {
     const ws = new WebSocket("ws://localhost:5000");
 
     ws.addEventListener("open", () => {
@@ -43,7 +46,9 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
     });
 
     ws.addEventListener("message", (event) => {
-      const message = JSON.parse(JSON.parse(JSON.parse(event.data).message).message);
+      const message = JSON.parse(
+        JSON.parse(JSON.parse(event.data).message).message
+      );
       setMessages((prev) => [...prev, message]);
     });
 
@@ -57,14 +62,43 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
       setIsConnected(false);
     });
 
-    setSocket(ws);
+    return ws;
+  };
 
-    return () => {
-      if (ws.readyState === WebSocket.OPEN) {
-        ws.close();
+  const cleanupWebSocket = () => {
+    if (socket) {
+      console.log("Cleaning up WebSocket connection");
+      if (socket.readyState === WebSocket.OPEN) {
+        const unsubscribeMessage = {
+          type: "unsubscribe",
+          stockSymbol: "TESLA",
+        };
+        socket.send(JSON.stringify(unsubscribeMessage));
+        socket.close();
       }
-    };
-  }, []);
+      setSocket(null);
+      setIsConnected(false);
+      setMessages([]);
+    }
+  };
+
+  useEffect(() => {
+    if (isUserLoading) {
+      return;
+    }
+
+    if (user?.statusCode === 200) {
+      const ws = createWebSocketConnection();
+      setSocket(ws);
+
+      return () => {
+        cleanupWebSocket();
+      };
+    } else {
+      cleanupWebSocket();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.statusCode, isUserLoading]);
 
   const sendMessage = (message: string) => {
     if (socket?.readyState === WebSocket.OPEN) {
