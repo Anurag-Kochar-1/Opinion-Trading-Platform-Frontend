@@ -17,3 +17,18 @@ export const onrampBalance = async ({ userId, amount }: { userId: string, amount
 export const getUser = async ({ userId }: { userId: string }): Promise<ApiResponse> => {
     return (await api.post("/user/me", { userId })).data
 }
+
+export const getUserStockBalance = async ({ userId }: { userId: string }): Promise<ApiResponse<{
+    [key: string]: {
+        yes: {
+            quantity: number;
+            locked: number;
+        };
+        no: {
+            quantity: number;
+            locked: number;
+        };
+    }
+}>> => {
+    return (await api.get(`/balance/stock/${userId}`)).data
+}

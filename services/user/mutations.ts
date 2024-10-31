@@ -21,6 +21,9 @@ export const useSignUpMutation = () => {
             queryClient.invalidateQueries({
                 queryKey: ['USER_BALANCE']
             })
+            queryClient.invalidateQueries({
+                queryKey: ['USER_STOCK_BALANCE']
+            })
             setUserId(variables.userId)
             setIsSignUpModalOpen(false);
         },

@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 
 const Page = () => {
-  redirect("/events/TESLA");
+  redirect("/events");
 };
 
 export default Page;

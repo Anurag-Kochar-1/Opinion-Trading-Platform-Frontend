@@ -1,8 +1,9 @@
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { addOrder } from "./apis"
 import { useToast } from "@/hooks/use-toast";
 
 export const useAddOrderMutation = () => {
+    const queryClient = useQueryClient()
     const { toast } = useToast();
     return useMutation({
         mutationFn: addOrder,
@@ -10,6 +11,12 @@ export const useAddOrderMutation = () => {
             toast({
                 variant: "success",
                 title: data?.statusMessage
+            })
+            queryClient.invalidateQueries({
+                queryKey: ['USER_BALANCE']
+            })
+            queryClient.invalidateQueries({
+                queryKey: ['USER_STOCK_BALANCE']
             })
         },
         // eslint-disable-next-line @typescript-eslint/no-explicit-any

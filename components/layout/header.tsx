@@ -8,6 +8,7 @@ import { useUser, useUserBalance } from "@/services/user/queries";
 import { Wallet } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
+import Link from "next/link";
 
 export const Header = () => {
   const queryClient = useQueryClient();
@@ -52,6 +53,8 @@ export const Header = () => {
         <Logo />
 
         <div className="flex justify-center items-center gap-2">
+          <Link href={`/portfolio`}> Portfolio </Link>
+
           {!hasUserIdHydrated ? (
             <Skeleton className="w-24 h-9" />
           ) : user?.statusCode === 200 ? (

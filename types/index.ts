@@ -19,3 +19,18 @@ export type ApiResponse<T = undefined> = {
     statusType: "SUCCESS" | "ERROR"
     data?: T
 }
+
+
+export type StockBalance = {
+    yes: {
+        quantity: number
+        locked: number
+    }
+    no: {
+        quantity: number
+        locked: number
+    }
+}
+
+
+

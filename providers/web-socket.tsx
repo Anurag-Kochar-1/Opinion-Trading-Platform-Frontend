@@ -1,6 +1,7 @@
 "use client";
 import { useOrderbookByStockSymbol, useUser } from "@/services/user/queries";
 import { OrderBookEntry } from "@/types";
+import { useParams } from "next/navigation";
 import React, { createContext, useContext, useEffect, useState } from "react";
 
 export interface WebSocketMessage {
@@ -26,6 +27,7 @@ const WebSocketContext = createContext<WebSocketContextType>({
 });
 
 export function WebSocketProvider({ children }: { children: React.ReactNode }) {
+  const { id } = useParams();
   const [socket, setSocket] = useState<WebSocket | null>(null);
   const [messages, setMessages] = useState<Array<OrderBookEntry>>([]);
   const [isConnected, setIsConnected] = useState(false);
@@ -33,7 +35,7 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
   const { data: user, isLoading: isUserLoading } = useUser();
   const { data: orderBookData, isLoading: isOrderBookDataLoading } =
     useOrderbookByStockSymbol({
-      stockSymbol: "TESLA",
+      stockSymbol: id as string,
     });
 
   const createWebSocketConnection = () => {
@@ -45,7 +47,7 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
 
       const subscriptionMessage: StockSubscription = {
         type: "subscribe",
-        stockSymbol: "TESLA",
+        stockSymbol: id as string,
       };
 
       ws.send(JSON.stringify(subscriptionMessage));
@@ -77,7 +79,7 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
       if (socket.readyState === WebSocket.OPEN) {
         const unsubscribeMessage = {
           type: "unsubscribe",
-          stockSymbol: "TESLA",
+          stockSymbol: id as string,
         };
         socket.send(JSON.stringify(unsubscribeMessage));
         socket.close();
@@ -115,7 +117,7 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
         console.log(orderBookData.data);
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.statusCode, isOrderBookDataLoading, isUserLoading]);
 
   const sendMessage = (message: string) => {
