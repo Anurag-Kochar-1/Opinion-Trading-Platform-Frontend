@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query"
-import { getUser, getUserBalance, getUserStockBalance } from "./apis"
+import { getUser, getUserBalance, getUserStockBalance, getUserStockBalanceByStockSymbol } from "./apis"
 import { useStore } from "@/store"
 import { getOrderBookByStockSymbol } from "../order/apis"
 
@@ -43,6 +43,18 @@ export const useUserStockBalance = () => {
         queryFn: () => getUserStockBalance({ userId }),
         refetchInterval: 5 * 1000,
         enabled: userData?.statusCode === 200,
+        retry: false,
+        refetchIntervalInBackground: false
+    })
+}
+export const useUserStockBalanceByStockSymbol = ({ stockSymbol }: { stockSymbol: string }) => {
+    const userId = useStore((state) => state.userId)
+    const { data: userData } = useUser()
+    return useQuery({
+        queryKey: ['USER_STOCK_BALANCE', { stockSymbol }],
+        queryFn: () => getUserStockBalanceByStockSymbol({ userId, stockSymbol }),
+        refetchInterval: 5 * 1000,
+        enabled: userData?.statusCode === 200 && !!stockSymbol,
         retry: false,
         refetchIntervalInBackground: false
     })

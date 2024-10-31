@@ -32,3 +32,15 @@ export const getUserStockBalance = async ({ userId }: { userId: string }): Promi
 }>> => {
     return (await api.get(`/balance/stock/${userId}`)).data
 }
+export const getUserStockBalanceByStockSymbol = async ({ userId, stockSymbol }: { userId: string, stockSymbol: string }): Promise<ApiResponse<{
+    yes: {
+        quantity: number;
+        locked: number;
+    };
+    no: {
+        quantity: number;
+        locked: number;
+    };
+}>> => {
+    return (await api.get(`/balance/stock/${userId}/${stockSymbol}`)).data
+}

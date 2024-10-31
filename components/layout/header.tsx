@@ -5,10 +5,17 @@ import { Button } from "../ui/button";
 import { useStore } from "@/store";
 import { Skeleton } from "../ui/skeleton";
 import { useUser, useUserBalance } from "@/services/user/queries";
-import { Wallet } from "lucide-react";
+import { Menu, Wallet } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 
 export const Header = () => {
   const queryClient = useQueryClient();
@@ -16,7 +23,6 @@ export const Header = () => {
   const removeUserId = useStore((state) => state.removeUserId);
   const hasUserIdHydrated = useStore((state) => state.hasUserIdHydrated);
   const setIsSignUpModalOpen = useStore((state) => state.setIsSignUpModalOpen);
-
   const setIsOnrampBalanceModalOpen = useStore(
     (state) => state.setIsOnrampBalanceModalOpen
   );
@@ -38,57 +44,94 @@ export const Header = () => {
 
   useEffect(() => {
     if (isUserLoading) return;
-    console.log(`user from useEffect`, user);
     if (user?.statusCode === 404) {
-      console.log(user);
       removeUserId();
       toast({ title: "Logged out!" });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isUserLoading]);
 
+  const NavigationContent = ({ isMobile = false }) => (
+    <div className={`flex ${isMobile ? 'flex-col space-y-4' : 'flex-row items-center'} gap-4`}>
+      {user?.statusCode === 200 ? (
+        <Link href="/portfolio" className={isMobile ? 'w-full' : ''}>
+          <Button variant="ghost" className={isMobile ? 'w-full' : ''}>
+            Portfolio
+          </Button>
+        </Link>
+      ) : null}
+
+      {!hasUserIdHydrated ? (
+        <Skeleton className="w-24 h-9" />
+      ) : user?.statusCode === 200 ? (
+        isUserBalanceLoading ? (
+          <Skeleton className="w-24 h-9" />
+        ) : isUserBalanceError ? (
+          userBalanceError?.message
+        ) : (
+          <div className="px-4 py-2 bg-muted flex justify-center items-center gap-2">
+            <Wallet size={15} />
+            <span>₹ {userBalance?.data?.balance ?? "-"}</span>
+          </div>
+        )
+      ) : (
+        <Button 
+          onClick={() => setIsSignUpModalOpen(true)}
+          className={isMobile ? 'w-full' : ''}
+        >
+          Get Started
+        </Button>
+      )}
+
+      {user?.statusCode === 200 ? (
+        <Button
+          variant="secondary"
+          onClick={() => setIsOnrampBalanceModalOpen(true)}
+          className={isMobile ? 'w-full' : ''}
+        >
+          Recharge
+        </Button>
+      ) : null}
+
+      {user?.statusCode === 200 ? (
+        <Button 
+          onClick={logOut} 
+          variant="destructive"
+          className={isMobile ? 'w-full' : ''}
+        >
+          Sign Out
+        </Button>
+      ) : null}
+    </div>
+  );
+
   return (
-    <div className="w-full border-b border-border sticky top-0 left-0 right-0 px-4 lg:px-6 bg-background">
+    <div className="w-full border-b border-border sticky top-0 left-0 right-0 px-4 lg:px-6 bg-background z-50">
       <div className="container mx-auto flex justify-between items-center h-16">
         <Logo />
 
-        <div className="flex justify-center items-center gap-4">
-          {user?.statusCode === 200 ? <Link href={`/portfolio`}> Portfolio </Link> : null}
+        {/* Desktop Navigation */}
+        <div className="hidden md:flex">
+          <NavigationContent />
+        </div>
 
-          {!hasUserIdHydrated ? (
-            <Skeleton className="w-24 h-9" />
-          ) : user?.statusCode === 200 ? (
-            isUserBalanceLoading ? (
-              <Skeleton className="w-24 h-9" />
-            ) : isUserBalanceError ? (
-              userBalanceError?.message
-            ) : (
-              <div className="px-4 py-2 bg-muted flex justify-center items-center gap-2">
-                <Wallet size={15} />{" "}
-                <span>₹ {userBalance?.data?.balance ?? "-"}</span>
+        {/* Mobile Navigation */}
+        <div className="md:hidden">
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon">
+                <Menu className="h-6 w-6" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent>
+              <SheetHeader>
+                <SheetTitle>Menu</SheetTitle>
+              </SheetHeader>
+              <div className="mt-6">
+                <NavigationContent isMobile={true} />
               </div>
-            )
-          ) : (
-            <Button onClick={() => setIsSignUpModalOpen(true)}>
-              Get Started
-            </Button>
-          )}
-
-          {user?.statusCode === 200 ? (
-            <Button
-              variant={"secondary"}
-              onClick={() => setIsOnrampBalanceModalOpen(true)}
-            >
-              {" "}
-              Recharge{" "}
-            </Button>
-          ) : null}
-          {user?.statusCode === 200 ? (
-            <Button onClick={logOut} variant={"destructive"}>
-              {" "}
-              Sign Out{" "}
-            </Button>
-          ) : null}
+            </SheetContent>
+          </Sheet>
         </div>
       </div>
     </div>

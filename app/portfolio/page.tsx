@@ -37,7 +37,7 @@ const Page = () => {
         <Loader2 size={40} className="animate-spin" />
       </div>
     );
-  }
+  } 
 
   if (user?.statusCode !== 200 && !isUserLoading) {
     return (
@@ -69,16 +69,18 @@ const Page = () => {
                       <CardTitle className="text-xl mt-2">
                         {stockName}
                       </CardTitle>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size={"icon"}>
-                            <MoreVertical size={15} />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem>Sell</DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                      {false && (
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size={"icon"}>
+                              <MoreVertical size={15} />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem>Sell</DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      )}
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-4">

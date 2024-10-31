@@ -2,7 +2,7 @@
 import { FC, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -13,15 +13,18 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { MinusIcon, PlusIcon } from "lucide-react";
+import { CheckCircle, Lock, MinusIcon, PlusIcon, XCircle } from "lucide-react";
 import { MAX_PRICE, TradingFormValues, tradingSchema } from "./schema";
 import { cn } from "@/lib/utils";
 import { useAddOrderMutation } from "@/services/order/mutations";
 import { useStore } from "@/store";
 import { useParams } from "next/navigation";
+import { useUserStockBalanceByStockSymbol } from "@/services/user/queries";
+import { StockBalance as StockBalanceType } from "@/types";
 
 export const TradingForm: FC = () => {
-  const { id: stockSymbol } = useParams();
+  const { id } = useParams();
+  const stockSymbol = String(id);
   const [type, setType] = useState<"place" | "exit">("place");
   const [activeTab, setActiveTab] = useState<"yes" | "no">("yes");
   const userId = useStore((state) => state.userId);
@@ -41,6 +44,9 @@ export const TradingForm: FC = () => {
   const totalCost = useMemo(() => {
     return price * quantity;
   }, [price, quantity]);
+
+  const { data: stockBalance, isLoading: isStockBalanceLoading } =
+    useUserStockBalanceByStockSymbol({ stockSymbol });
 
   const adjustPrice = (increment: boolean) => {
     const currentPrice = Number(price);
@@ -256,8 +262,20 @@ export const TradingForm: FC = () => {
                 </div>
               ) : null}
 
+              <p className="font-medium">
+                {" "}
+                Total order {type === "place" ? "cost" : "value"} will be{" "}
+                {totalCost}{" "}
+              </p>
 
-              <p className="font-medium"> Total order {type === "place" ? "cost" : "value"} will be {totalCost} </p>
+              {type === "exit" ? (
+                isStockBalanceLoading ? null : stockBalance?.statusCode ===
+                  200 ? (
+                  <StockBalance
+                    stockBalance={stockBalance?.data as StockBalanceType}
+                  />
+                ) : null
+              ) : null}
 
               <Button
                 type="submit"
@@ -276,3 +294,59 @@ export const TradingForm: FC = () => {
     </Card>
   );
 };
+
+function StockBalance({ stockBalance }: { stockBalance: StockBalanceType }) {
+  return (
+    <Card className="w-full max-w-md">
+      <CardHeader>
+        <CardTitle className="text-xl font-bold">Stock Balance</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="grid grid-cols-2 gap-6">
+          <div className="space-y-4">
+            <div className="flex items-center space-x-2">
+              <CheckCircle className="h-6 w-6 text-green-500" />
+              <span className="text-lg font-semibold">Yes</span>
+            </div>
+            <div className="pl-8 space-y-2">
+              <p className="text-sm text-muted-foreground">
+                Quantity:{" "}
+                <span className="font-medium text-foreground">
+                  {stockBalance?.yes?.quantity}
+                </span>
+              </p>
+              <p className="text-sm text-muted-foreground flex items-center">
+                <Lock className="h-4 w-4 mr-1 text-orange-500" />
+                Locked:{" "}
+                <span className="font-medium text-foreground ml-1">
+                  {stockBalance.yes?.locked}
+                </span>
+              </p>
+            </div>
+          </div>
+          <div className="space-y-4">
+            <div className="flex items-center space-x-2">
+              <XCircle className="h-6 w-6 text-red-500" />
+              <span className="text-lg font-semibold">No</span>
+            </div>
+            <div className="pl-8 space-y-2">
+              <p className="text-sm text-muted-foreground">
+                Quantity:{" "}
+                <span className="font-medium text-foreground">
+                  {stockBalance?.no?.quantity}
+                </span>
+              </p>
+              <p className="text-sm text-muted-foreground flex items-center">
+                <Lock className="h-4 w-4 mr-1 text-orange-500" />
+                Locked:{" "}
+                <span className="font-medium text-foreground ml-1">
+                  {stockBalance?.no?.locked}
+                </span>
+              </p>
+            </div>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
