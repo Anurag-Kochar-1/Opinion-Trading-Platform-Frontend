@@ -52,8 +52,8 @@ export const Header = () => {
       <div className="container mx-auto flex justify-between items-center h-16">
         <Logo />
 
-        <div className="flex justify-center items-center gap-2">
-          <Link href={`/portfolio`}> Portfolio </Link>
+        <div className="flex justify-center items-center gap-4">
+          {user?.statusCode === 200 ? <Link href={`/portfolio`}> Portfolio </Link> : null}
 
           {!hasUserIdHydrated ? (
             <Skeleton className="w-24 h-9" />

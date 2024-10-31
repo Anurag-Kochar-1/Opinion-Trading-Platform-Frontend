@@ -33,7 +33,6 @@ export const useOrderbookByStockSymbol = ({ stockSymbol }: { stockSymbol: string
         queryFn: () => getOrderBookByStockSymbol({ stockSymbol }),
         enabled: !!userId && !!stockSymbol,
     })
-
 }
 
 export const useUserStockBalance = () => {

@@ -27,16 +27,40 @@ const WebSocketContext = createContext<WebSocketContextType>({
 });
 
 export function WebSocketProvider({ children }: { children: React.ReactNode }) {
-  const { id } = useParams();
+  const params = useParams();
+  const stockId = params?.id as string;
+
   const [socket, setSocket] = useState<WebSocket | null>(null);
   const [messages, setMessages] = useState<Array<OrderBookEntry>>([]);
   const [isConnected, setIsConnected] = useState(false);
+  const [currentSubscriptionStockId, setCurrentSubscriptionStockId] = useState<
+    string | null
+  >(null);
 
   const { data: user, isLoading: isUserLoading } = useUser();
   const { data: orderBookData, isLoading: isOrderBookDataLoading } =
     useOrderbookByStockSymbol({
-      stockSymbol: id as string,
+      stockSymbol: stockId,
     });
+
+  const subscribeToStock = (stockSymbol: string) => {
+    if (socket?.readyState === WebSocket.OPEN) {
+      if (currentSubscriptionStockId) {
+        const unsubscribeMessage: StockSubscription = {
+          type: "unsubscribe",
+          stockSymbol: currentSubscriptionStockId,
+        };
+        socket.send(JSON.stringify(unsubscribeMessage));
+      }
+
+      const subscriptionMessage: StockSubscription = {
+        type: "subscribe",
+        stockSymbol: stockSymbol,
+      };
+      socket.send(JSON.stringify(subscriptionMessage));
+      setCurrentSubscriptionStockId(stockSymbol);
+    }
+  };
 
   const createWebSocketConnection = () => {
     const ws = new WebSocket("ws://localhost:5000");
@@ -45,12 +69,9 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
       console.log("Connected to WebSocket");
       setIsConnected(true);
 
-      const subscriptionMessage: StockSubscription = {
-        type: "subscribe",
-        stockSymbol: id as string,
-      };
-
-      ws.send(JSON.stringify(subscriptionMessage));
+      if (stockId) {
+        subscribeToStock(stockId);
+      }
     });
 
     ws.addEventListener("message", (event) => {
@@ -76,10 +97,10 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
   const cleanupWebSocket = () => {
     if (socket) {
       console.log("Cleaning up WebSocket connection");
-      if (socket.readyState === WebSocket.OPEN) {
+      if (socket.readyState === WebSocket.OPEN && currentSubscriptionStockId) {
         const unsubscribeMessage = {
           type: "unsubscribe",
-          stockSymbol: id as string,
+          stockSymbol: currentSubscriptionStockId,
         };
         socket.send(JSON.stringify(unsubscribeMessage));
         socket.close();
@@ -87,6 +108,13 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
       setSocket(null);
       setIsConnected(false);
       setMessages([]);
+      setCurrentSubscriptionStockId(null);
+    }
+  };
+
+  const sendMessage = (message: string) => {
+    if (socket?.readyState === WebSocket.OPEN) {
+      socket.send(JSON.stringify({ type: "message", data: message }));
     }
   };
 
@@ -114,17 +142,16 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
 
       if (user?.statusCode === 200 || orderBookData.statusCode === 200) {
         setMessages((prev) => [...prev, orderBookData.data!]);
-        console.log(orderBookData.data);
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user?.statusCode, isOrderBookDataLoading, isUserLoading]);
+  }, [user?.statusCode, isOrderBookDataLoading, isUserLoading, stockId]);
 
-  const sendMessage = (message: string) => {
-    if (socket?.readyState === WebSocket.OPEN) {
-      socket.send(JSON.stringify({ type: "message", data: message }));
+  useEffect(() => {
+    if (isConnected && stockId && stockId !== currentSubscriptionStockId) {
+      subscribeToStock(stockId);
     }
-  };
+  }, [stockId, isConnected]);
 
   return (
     <WebSocketContext.Provider value={{ messages, sendMessage, isConnected }}>

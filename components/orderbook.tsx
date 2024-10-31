@@ -73,7 +73,7 @@ export const Orderbook: React.FC = () => {
   };
 
   return (
-    <Card className="w-full max-w-3xl p-4">
+    <Card className="w-full max-w-4xl p-4">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-lg font-semibold">Order Book</h2>
         <Badge variant={isConnected ? "success" : "destructive"}>
