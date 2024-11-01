@@ -3,9 +3,36 @@ import React, { useMemo } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useWebSocket } from "@/providers/web-socket";
+import { cn } from "@/lib/utils";
+
+const PriceLevel: React.FC<{
+  price: number;
+  total: number;
+  maxTotal: number;
+  side: "yes" | "no";
+}> = ({ price, total, maxTotal, side }) => {
+  const percentage = (total / maxTotal) * 100;
+  const bgColor = side === "yes" ? "bg-blue-300" : "bg-red-300";
+
+  return (
+    <div className="grid grid-cols-2 relative h-8 px-2">
+      <div className="z-10 flex items-center">{price.toFixed(1)}</div>
+      <div className="text-right z-10 flex items-center justify-end">
+        {total}
+      </div>
+      <div
+        className={`absolute inset-0 opacity-50 transition-all duration-200 ${bgColor}`}
+        style={{
+          width: `${percentage}%`,
+          ...(side === "no" && { right: 0 }),
+        }}
+      />
+    </div>
+  );
+};
 
 export const Orderbook: React.FC = () => {
-  const { messages, isConnected } = useWebSocket();
+  const { messages, status } = useWebSocket();
 
   const currentData = useMemo(() => {
     if (!messages.length) {
@@ -46,39 +73,26 @@ export const Orderbook: React.FC = () => {
     return Math.max(yesMax, noMax, 1);
   }, [currentData]);
 
-  const PriceLevel: React.FC<{
-    price: number;
-    total: number;
-    maxTotal: number;
-    side: "yes" | "no";
-  }> = ({ price, total, maxTotal, side }) => {
-    const percentage = (total / maxTotal) * 100;
-    const bgColor = side === "yes" ? "bg-blue-300" : "bg-red-300";
-
-    return (
-      <div className="grid grid-cols-2 relative h-8 px-2">
-        <div className="z-10 flex items-center">{price.toFixed(1)}</div>
-        <div className="text-right z-10 flex items-center justify-end">
-          {total}
-        </div>
-        <div
-          className={`absolute inset-0 opacity-50 transition-all duration-200 ${bgColor}`}
-          style={{
-            width: `${percentage}%`,
-            ...(side === "no" && { right: 0 }),
-          }}
-        />
-      </div>
-    );
-  };
+  const statusBadgeBackgroundColor = useMemo(() => {
+    switch (status) {
+      case "Disconnected":
+        return "bg-orange-700";
+      case "Connected":
+        return "bg-green-700";
+      case "Connecting...":
+        return "bg-amber-700";
+      case "Error Occurred":
+        return "bg-red-700";
+      default:
+        return "bg-black";
+    }
+  }, [status]);
 
   return (
     <Card className="w-full max-w-4xl p-4">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-lg font-semibold">Order Book</h2>
-        <Badge variant={isConnected ? "success" : "destructive"}>
-          {isConnected ? "Connected" : "Disconnected"}
-        </Badge>
+        <Badge className={cn( `hover:${statusBadgeBackgroundColor}/100`, statusBadgeBackgroundColor)}>{status}</Badge>
       </div>
 
       <div className="grid grid-cols-2 gap-4">

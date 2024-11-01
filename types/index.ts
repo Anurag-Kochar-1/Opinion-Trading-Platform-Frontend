@@ -34,3 +34,11 @@ export type StockBalance = {
 
 
 
+
+
+export
+    type WebSocketStatus =
+    | "Disconnected"
+    | "Connecting..."
+    | "Connected"
+    | "Error Occurred";

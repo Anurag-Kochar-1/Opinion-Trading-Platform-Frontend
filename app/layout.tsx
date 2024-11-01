@@ -44,7 +44,6 @@ export default function RootLayout({
               initialIsOpen={false}
             />
             {/* ***************** Modals ***************** */}
-
             <SignUpFormModal />
             <OnrampBalanceFormModal />
           </body>

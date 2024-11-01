@@ -1,6 +1,6 @@
 "use client";
 import { useOrderbookByStockSymbol, useUser } from "@/services/user/queries";
-import { OrderBookEntry } from "@/types";
+import { OrderBookEntry, WebSocketStatus } from "@/types";
 import { useParams } from "next/navigation";
 import React, { createContext, useContext, useEffect, useState } from "react";
 
@@ -18,12 +18,14 @@ interface WebSocketContextType {
   messages: Array<OrderBookEntry>;
   sendMessage: (message: string) => void;
   isConnected: boolean;
+  status: WebSocketStatus;
 }
 
 const WebSocketContext = createContext<WebSocketContextType>({
   messages: [],
   sendMessage: () => {},
   isConnected: false,
+  status: "Disconnected",
 });
 
 export function WebSocketProvider({ children }: { children: React.ReactNode }) {
@@ -33,6 +35,8 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
   const [socket, setSocket] = useState<WebSocket | null>(null);
   const [messages, setMessages] = useState<Array<OrderBookEntry>>([]);
   const [isConnected, setIsConnected] = useState(false);
+  const [status, setStatus] = useState<WebSocketStatus>("Disconnected");
+
   const [currentSubscriptionStockId, setCurrentSubscriptionStockId] = useState<
     string | null
   >(null);
@@ -66,11 +70,14 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
     if (!process.env.NEXT_PUBLIC_WS_URL) {
       throw new Error("Websocket url is not defined!");
     }
+
     const ws = new WebSocket(process.env.NEXT_PUBLIC_WS_URL);
+    setStatus("Connecting...");
 
     ws.addEventListener("open", () => {
       console.log("Connected to WebSocket");
       setIsConnected(true);
+      setStatus("Connected");
 
       if (stockId) {
         subscribeToStock(stockId);
@@ -87,11 +94,13 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
     ws.addEventListener("error", (error) => {
       console.error("WebSocket error:", error);
       setIsConnected(false);
+      setStatus("Error Occurred");
     });
 
     ws.addEventListener("close", () => {
       console.log("Disconnected from WebSocket");
       setIsConnected(false);
+      setStatus("Disconnected");
     });
 
     return ws;
@@ -110,6 +119,7 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
       }
       setSocket(null);
       setIsConnected(false);
+      setStatus("Disconnected");
       setMessages([]);
       setCurrentSubscriptionStockId(null);
     }
@@ -157,7 +167,9 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
   }, [stockId, isConnected]);
 
   return (
-    <WebSocketContext.Provider value={{ messages, sendMessage, isConnected }}>
+    <WebSocketContext.Provider
+      value={{ messages, sendMessage, isConnected, status }}
+    >
       {children}
     </WebSocketContext.Provider>
   );
