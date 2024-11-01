@@ -19,13 +19,18 @@ import { cn } from "@/lib/utils";
 import { useAddOrderMutation } from "@/services/order/mutations";
 import { useStore } from "@/store";
 import { useParams } from "next/navigation";
-import { useUserStockBalanceByStockSymbol } from "@/services/user/queries";
+import {
+  useUserBalance,
+  useUserStockBalanceByStockSymbol,
+} from "@/services/user/queries";
 import { StockBalance as StockBalanceType } from "@/types";
 import { Separator } from "../ui/separator";
+import { useToast } from "@/hooks/use-toast";
 
 export const TradingForm: FC = () => {
   const { id } = useParams();
   const stockSymbol = String(id);
+  const { toast } = useToast();
   const [type, setType] = useState<"place" | "exit">("place");
   const [activeTab, setActiveTab] = useState<"yes" | "no">("yes");
   const userId = useStore((state) => state.userId);
@@ -48,6 +53,7 @@ export const TradingForm: FC = () => {
 
   const { data: stockBalance, isLoading: isStockBalanceLoading } =
     useUserStockBalanceByStockSymbol({ stockSymbol });
+  const { data: userBalance } = useUserBalance();
 
   const adjustPrice = (increment: boolean) => {
     const currentPrice = Number(price);
@@ -90,7 +96,46 @@ export const TradingForm: FC = () => {
   const addOrderMutation = useAddOrderMutation();
 
   const onSubmit = (values: TradingFormValues) => {
-    console.log(`type`, type);
+    if (type === "place") {
+      if (!userBalance?.data) {
+        alert("Use balance not loaded! Please try again.");
+        return;
+      }
+      const priceInPaise = values.price * 100;
+      const totalCost = priceInPaise * values.quantity;
+      if (totalCost > userBalance?.data?.balance) {
+        toast({
+          title: "Low Balance!",
+          variant: "destructive",
+        });
+        return;
+      }
+    } else if (type === "exit") {
+      if (!stockBalance?.data) {
+        alert("User Stock Balance Not Loaded, Please try again!");
+        return;
+      }
+      if (
+        activeTab === "yes" &&
+        values.quantity > stockBalance?.data?.yes?.quantity
+      ) {
+        toast({
+          title: `You don't have ${values.quantity} ${activeTab} stocks to sell`,
+          variant: "destructive",
+        });
+        return;
+      } else if (
+        activeTab === "no" &&
+        values.quantity > stockBalance?.data?.no?.quantity
+      ) {
+        toast({
+          title: `You don't have ${values.quantity} ${activeTab} stocks to sell`,
+          variant: "destructive",
+        });
+        return;
+      }
+    }
+
     addOrderMutation.mutate({
       price: values.price,
       quantity: values.quantity,
