@@ -20,6 +20,7 @@ import {
 import { useStore } from "@/store";
 import { signUpFormSchema, SignUpFormValues } from "./schema";
 import { useSignUpMutation } from "@/services/user/mutations";
+import { generateUsername } from "@/utils";
 
 export function SignUpFormModal() {
   const isSignUpModalOpen = useStore((state) => state.isSignUpModalOpen);
@@ -29,8 +30,8 @@ export function SignUpFormModal() {
   const form = useForm<SignUpFormValues>({
     resolver: zodResolver(signUpFormSchema),
     defaultValues: {
-      username: "",
-      password: "",
+      username: generateUsername(),
+      password: "123456",
     },
   });
 

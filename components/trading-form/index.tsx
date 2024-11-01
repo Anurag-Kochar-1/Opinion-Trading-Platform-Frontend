@@ -347,11 +347,11 @@ export const TradingForm: FC = () => {
 
 function StockBalance({ stockBalance }: { stockBalance: StockBalanceType }) {
   return (
-    <Card className="w-full p-0 border-none">
+    <Card className="w-full p-0 border-none shadow-none">
       <CardHeader className="p-0 py-2">
         <CardTitle className="text-lg font-bold">Stock Balance</CardTitle>
       </CardHeader>
-      <CardContent className="p-0 pb-2">
+      <CardContent className="p-0 pb-2 border-none">
         <div className="grid grid-cols-2 gap-6">
           <div className="space-y-4">
             <div className="flex items-center space-x-2">
@@ -361,13 +361,13 @@ function StockBalance({ stockBalance }: { stockBalance: StockBalanceType }) {
               <p className="text-sm text-muted-foreground">
                 Quantity:{" "}
                 <span className="font-medium text-foreground">
-                  {stockBalance?.yes?.quantity}
+                  {stockBalance?.yes?.quantity ?? 0}
                 </span>
               </p>
               <p className="text-sm text-muted-foreground flex items-center">
                 Locked:{" "}
                 <span className="font-medium text-foreground ml-1">
-                  {stockBalance.yes?.locked}
+                  {stockBalance.yes?.locked ?? 0}
                 </span>
               </p>
             </div>
@@ -380,13 +380,13 @@ function StockBalance({ stockBalance }: { stockBalance: StockBalanceType }) {
               <p className="text-sm text-muted-foreground">
                 Quantity:{" "}
                 <span className="font-medium text-foreground">
-                  {stockBalance?.no?.quantity}
+                  {stockBalance?.no?.quantity ?? 0}
                 </span>
               </p>
               <p className="text-sm text-muted-foreground flex items-center">
                 Locked:{" "}
                 <span className="font-medium text-foreground ml-1">
-                  {stockBalance?.no?.locked}
+                  {stockBalance?.no?.locked ?? 0}
                 </span>
               </p>
             </div>

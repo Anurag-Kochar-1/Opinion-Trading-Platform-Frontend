@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/react";
 import { Toaster } from "@/components/ui/toaster";
 import localFont from "next/font/local";
 import "./globals.css";
@@ -59,6 +60,7 @@ export default function RootLayout({
           >
             <Header />
             {children}
+            <Analytics />
             <Toaster />
             <ReactQueryDevtools
               buttonPosition="bottom-left"
