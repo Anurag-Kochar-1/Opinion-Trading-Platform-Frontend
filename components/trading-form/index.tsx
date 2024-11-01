@@ -333,8 +333,9 @@ export const TradingForm: FC = () => {
                   "bg-blue-500 hover:bg-blue-600": activeTab === "yes",
                   "bg-red-500 hover:bg-red-600": activeTab === "no",
                 })}
+                disabled={addOrderMutation.isPending}
               >
-                {type == "place" ? "Place" : "Exit"} order
+                {type == "place" ? "Place" : "Exit"} order {addOrderMutation.isPending ? "..." : null}
               </Button>
             </div>
           </form>
