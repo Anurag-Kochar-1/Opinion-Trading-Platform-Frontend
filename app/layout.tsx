@@ -22,7 +22,26 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Probo.in",
+  title: "Opinions Trading",
+  description:
+    "Explore diverse stock symbols and participate in market predictions. Your opinion could be the next winning trade.",
+  creator: "Anurag Kochar",
+  publisher: "Anurag Kochar",
+  twitter: {
+    card: "summary_large_image",
+    creatorId: "anurag__kochar",
+    creator: "Anurag Kochar",
+    title: "Opinions Trading",
+    description:
+      "Explore diverse stock symbols and participate in market predictions. Your opinion could be the next winning trade.",
+  },
+  openGraph: {
+    type: "website",
+    images: ["/images/og.png"],
+    title: "Opinions Trading",
+    description:
+      "Explore diverse stock symbols and participate in market predictions. Your opinion could be the next winning trade.",
+  },
 };
 
 export default function RootLayout({
