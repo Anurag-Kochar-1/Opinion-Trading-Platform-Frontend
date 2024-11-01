@@ -23,6 +23,7 @@ export const Header = () => {
   const removeUserId = useStore((state) => state.removeUserId);
   const hasUserIdHydrated = useStore((state) => state.hasUserIdHydrated);
   const setIsSignUpModalOpen = useStore((state) => state.setIsSignUpModalOpen);
+
   const setIsOnrampBalanceModalOpen = useStore(
     (state) => state.setIsOnrampBalanceModalOpen
   );
@@ -52,10 +53,14 @@ export const Header = () => {
   }, [isUserLoading]);
 
   const NavigationContent = ({ isMobile = false }) => (
-    <div className={`flex ${isMobile ? 'flex-col space-y-4' : 'flex-row items-center'} gap-4`}>
+    <div
+      className={`flex ${
+        isMobile ? "flex-col space-y-4" : "flex-row items-center"
+      } gap-4`}
+    >
       {user?.statusCode === 200 ? (
-        <Link href="/portfolio" className={isMobile ? 'w-full' : ''}>
-          <Button variant="ghost" className={isMobile ? 'w-full' : ''}>
+        <Link href="/portfolio" className={isMobile ? "w-full" : ""}>
+          <Button variant="ghost" className={isMobile ? "w-full" : ""}>
             Portfolio
           </Button>
         </Link>
@@ -71,13 +76,13 @@ export const Header = () => {
         ) : (
           <div className="px-4 py-2 bg-muted flex justify-center items-center gap-2">
             <Wallet size={15} />
-            <span>₹ {userBalance?.data?.balance ?? "-"}</span>
+            <span>₹ {userBalance?.data?.balance ? userBalance?.data?.balance / 100 : "-"}</span>
           </div>
         )
       ) : (
-        <Button 
+        <Button
           onClick={() => setIsSignUpModalOpen(true)}
-          className={isMobile ? 'w-full' : ''}
+          className={isMobile ? "w-full" : ""}
         >
           Get Started
         </Button>
@@ -87,17 +92,17 @@ export const Header = () => {
         <Button
           variant="secondary"
           onClick={() => setIsOnrampBalanceModalOpen(true)}
-          className={isMobile ? 'w-full' : ''}
+          className={isMobile ? "w-full" : ""}
         >
           Recharge
         </Button>
       ) : null}
 
       {user?.statusCode === 200 ? (
-        <Button 
-          onClick={logOut} 
+        <Button
+          onClick={logOut}
           variant="destructive"
-          className={isMobile ? 'w-full' : ''}
+          className={isMobile ? "w-full" : ""}
         >
           Sign Out
         </Button>

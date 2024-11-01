@@ -8,6 +8,9 @@ export const useSignUpMutation = () => {
     const { toast } = useToast()
     const setUserId = useStore((state) => state.setUserId);
     const setIsSignUpModalOpen = useStore((state) => state.setIsSignUpModalOpen);
+    const setIsSignUpBonusModalOpen = useStore(
+        (state) => state.setIsSignUpBonusModalOpen
+    );
     return useMutation({
         mutationFn: signUp,
         onSuccess(data, variables) {
@@ -15,6 +18,9 @@ export const useSignUpMutation = () => {
                 title: data?.statusMessage,
                 variant: "success"
             })
+            setUserId(variables.userId)
+            setIsSignUpModalOpen(false);
+            setIsSignUpBonusModalOpen(true)
             queryClient.invalidateQueries({
                 queryKey: ['USER']
             })
@@ -24,8 +30,6 @@ export const useSignUpMutation = () => {
             queryClient.invalidateQueries({
                 queryKey: ['USER_STOCK_BALANCE']
             })
-            setUserId(variables.userId)
-            setIsSignUpModalOpen(false);
         },
 
     });

@@ -38,16 +38,25 @@ export function Hero() {
             Explore diverse stock symbols and participate in market predictions.
             Your opinion could be the next winning trade.
           </p>
-          <div className="flex justify-center items-center space-x-4 mb-8">
+          <div className="flex justify-center flex-col sm:flex-row items-center gap-4 mb-8">
             {!hasUserIdHydrated || isUserLoading ? (
-              <Skeleton className="w-32 h-10" />
+              <Skeleton className="w-full sm:w-32 h-10" />
             ) : user?.statusCode === 200 ? null : (
-              <Button size={"lg"} onClick={() => setIsSignUpModalOpen(true)}>
+              <Button
+                size={"lg"}
+                className="w-full sm:w-max"
+                onClick={() => setIsSignUpModalOpen(true)}
+              >
                 Get Started
               </Button>
             )}
 
-            <Button size="lg" variant={"secondary"} className="group" asChild>
+            <Button
+              size="lg"
+              variant={"secondary"}
+              className="group w-full sm:w-max"
+              asChild
+            >
               <Link href={`#markets`}>
                 View All Markets
                 <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />

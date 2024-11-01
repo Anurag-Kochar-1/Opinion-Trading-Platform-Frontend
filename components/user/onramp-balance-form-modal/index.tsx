@@ -36,10 +36,10 @@ export const OnrampBalanceFormModal = () => {
 
   const amount = form.watch("amount");
 
-  const onrampBalanceMutation = useOnrampBalanceMutation()
+  const onrampBalanceMutation = useOnrampBalanceMutation();
 
   const onSubmit = (data: OnrampBalanceFormValues) => {
-    onrampBalanceMutation.mutate({amount: data.amount})
+    onrampBalanceMutation.mutate({ amount: data.amount * 100 });
   };
 
   const handleDialogOpenChange = (open: boolean) => {
@@ -73,7 +73,14 @@ export const OnrampBalanceFormModal = () => {
                 </FormItem>
               )}
             />
-            <Button disabled={onrampBalanceMutation.isPending} className="w-full"> Pay {amount ? `₹ ${amount}` : null} {onrampBalanceMutation.isPending ? "..." : null} </Button>
+            <Button
+              disabled={onrampBalanceMutation.isPending}
+              className="w-full"
+            >
+              {" "}
+              Pay {amount ? `₹ ${amount}` : null}{" "}
+              {onrampBalanceMutation.isPending ? "..." : null}{" "}
+            </Button>
           </form>
         </Form>
       </DialogContent>

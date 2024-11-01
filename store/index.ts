@@ -10,6 +10,7 @@ interface StoreState {
     isOnrampBalanceModalOpen: boolean;
     userId: string;
     hasUserIdHydrated: boolean;
+    isSignUpBonusModalOpen: boolean;
 }
 
 
@@ -20,6 +21,7 @@ interface StoreActions {
     setUserId: (userId: string) => void;
     removeUserId: () => void;
     setHasUserIdHydrated: (state: boolean) => void;
+    setIsSignUpBonusModalOpen: (state: boolean) => void;
 }
 
 type Store = StoreState & StoreActions;
@@ -30,6 +32,7 @@ const initialState: StoreState = {
     isOnrampBalanceModalOpen: false,
     userId: '',
     hasUserIdHydrated: false,
+    isSignUpBonusModalOpen: false
 };
 
 export const useStore = create<Store>()(
@@ -54,6 +57,9 @@ export const useStore = create<Store>()(
 
             setIsOnrampBalanceModalOpen(val) {
                 set({ isOnrampBalanceModalOpen: val })
+            },
+            setIsSignUpBonusModalOpen(state) {
+                set({ isSignUpBonusModalOpen: state })
             },
         }),
         {

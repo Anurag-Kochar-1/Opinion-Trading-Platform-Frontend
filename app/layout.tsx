@@ -9,6 +9,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { OnrampBalanceFormModal } from "@/components/user/onramp-balance-form-modal";
 import { WebSocketProvider } from "@/providers/web-socket";
 import Footer from "@/components/layout/footer";
+import { SignUpBonusDialog } from "@/components/sign-up-bonus-modal";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -66,6 +67,7 @@ export default function RootLayout({
             {/* ***************** Modals ***************** */}
             <SignUpFormModal />
             <OnrampBalanceFormModal />
+            <SignUpBonusDialog />
             {/* ***************** Modals ***************** */}
 
             <Footer />
