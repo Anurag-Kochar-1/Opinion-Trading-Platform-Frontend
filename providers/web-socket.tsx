@@ -63,7 +63,10 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
   };
 
   const createWebSocketConnection = () => {
-    const ws = new WebSocket("ws://localhost:5000");
+    if (!process.env.NEXT_PUBLIC_WS_URL) {
+      throw new Error("Websocket url is not defined!");
+    }
+    const ws = new WebSocket(process.env.NEXT_PUBLIC_WS_URL);
 
     ws.addEventListener("open", () => {
       console.log("Connected to WebSocket");
