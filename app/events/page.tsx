@@ -1,19 +1,15 @@
 "use client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import {
-  AlertCircle,
-  Banknote,
-  PackageSearch,
-  RefreshCcw,
-  TrendingUp,
-} from "lucide-react";
+import { AlertCircle, Banknote, PackageSearch, RefreshCcw } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useAllStockSymbolsQuery } from "@/services/symbol/queries";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { memo } from "react";
+import { Hero } from "@/components/hero";
+import { Separator } from "@/components/ui/separator";
 
 const ACTIVE_THRESHOLD = 5;
 
@@ -38,29 +34,11 @@ export default function StockSymbolsPage() {
 
   return (
     <div>
-      {/* Hero Section */}
-      <div className="pt-16 pb-12 mb-12">
-        <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto text-center">
-            <div className="inline-flex items-center justify-center p-2 mb-6 rounded-full bg-primary/10 text-primary">
-              <TrendingUp className="w-5 h-5 mr-2" />
-              <span className="text-sm font-medium">
-                Opinion Trading Markets
-              </span>
-            </div>
-            <h1 className="text-4xl md:text-5xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/60">
-              Trade Your Market Predictions
-            </h1>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Explore diverse stock symbols and participate in market
-              predictions. Your opinion could be the next winning trade.
-            </p>
-          </div>
-        </div>
-      </div>
+      <Hero />
+      <Separator orientation="horizontal" className="container mx-auto" />
 
       {/* Content Section */}
-      <div className="container mx-auto px-4 pb-20">
+      <div className="container mx-auto px-4 pb-20 pt-8" id="markets">
         <div className="flex items-center justify-between mb-8">
           <h2 className="text-2xl font-semibold">Available Markets</h2>
           <Badge variant="outline" className="text-sm hidden sm:block">
