@@ -39,7 +39,7 @@ export function Hero() {
             Your opinion could be the next winning trade.
           </p>
           <div className="flex justify-center items-center space-x-4 mb-8">
-            {!hasUserIdHydrated ? (
+            {!hasUserIdHydrated || isUserLoading ? (
               <Skeleton className="w-32 h-10" />
             ) : user?.statusCode === 200 ? null : (
               <Button size={"lg"} onClick={() => setIsSignUpModalOpen(true)}>
