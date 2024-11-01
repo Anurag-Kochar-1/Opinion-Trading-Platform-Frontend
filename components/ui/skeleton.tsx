@@ -29,7 +29,7 @@ const ShimmerEffect: React.FC<ShimmerEffectProps> = ({
         overflow: "hidden",
         backgroundColor: "rgba(0, 0, 0, 0.1)",
       }}
-      className={cn(className)}
+      className={cn("rounded-lg",className)}
       aria-hidden="true"
     >
       <motion.div

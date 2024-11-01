@@ -13,7 +13,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CheckCircle, Lock, MinusIcon, PlusIcon, XCircle } from "lucide-react";
+import { MinusIcon, PlusIcon } from "lucide-react";
 import { MAX_PRICE, TradingFormValues, tradingSchema } from "./schema";
 import { cn } from "@/lib/utils";
 import { useAddOrderMutation } from "@/services/order/mutations";
@@ -21,6 +21,7 @@ import { useStore } from "@/store";
 import { useParams } from "next/navigation";
 import { useUserStockBalanceByStockSymbol } from "@/services/user/queries";
 import { StockBalance as StockBalanceType } from "@/types";
+import { Separator } from "../ui/separator";
 
 export const TradingForm: FC = () => {
   const { id } = useParams();
@@ -32,8 +33,8 @@ export const TradingForm: FC = () => {
   const form = useForm<TradingFormValues>({
     resolver: zodResolver(tradingSchema),
     defaultValues: {
-      price: 4.5,
-      quantity: 3,
+      price: 6.5,
+      quantity: 1,
     },
   });
 
@@ -101,7 +102,7 @@ export const TradingForm: FC = () => {
   };
 
   return (
-    <Card className="w-full lg:max-w-md">
+    <Card className="w-full">
       <CardContent className="pt-6">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -116,13 +117,13 @@ export const TradingForm: FC = () => {
                   value="place"
                   className="font-semibold rounded-l-xl py-3.5"
                 >
-                  Place
+                  BUY
                 </TabsTrigger>
                 <TabsTrigger
                   value="exit"
                   className="font-semibold rounded-r-xl py-3.5"
                 >
-                  Exit
+                  SELL
                 </TabsTrigger>
               </TabsList>
             </Tabs>
@@ -138,13 +139,13 @@ export const TradingForm: FC = () => {
                   value="yes"
                   className="data-[state=active]:bg-blue-500 data-[state=active]:text-white font-semibold rounded-l-xl py-3.5"
                 >
-                  Yes ₹4.5
+                  Yes
                 </TabsTrigger>
                 <TabsTrigger
                   value="no"
                   className="data-[state=active]:bg-red-500 data-[state=active]:text-white font-semibold rounded-r-xl py-3.5"
                 >
-                  No ₹5.5
+                  No
                 </TabsTrigger>
               </TabsList>
             </Tabs>
@@ -271,9 +272,12 @@ export const TradingForm: FC = () => {
               {type === "exit" ? (
                 isStockBalanceLoading ? null : stockBalance?.statusCode ===
                   200 ? (
-                  <StockBalance
-                    stockBalance={stockBalance?.data as StockBalanceType}
-                  />
+                  <>
+                    <Separator orientation="horizontal" />
+                    <StockBalance
+                      stockBalance={stockBalance?.data as StockBalanceType}
+                    />
+                  </>
                 ) : null
               ) : null}
 
@@ -297,18 +301,17 @@ export const TradingForm: FC = () => {
 
 function StockBalance({ stockBalance }: { stockBalance: StockBalanceType }) {
   return (
-    <Card className="w-full max-w-md">
-      <CardHeader>
-        <CardTitle className="text-xl font-bold">Stock Balance</CardTitle>
+    <Card className="w-full p-0 border-none">
+      <CardHeader className="p-0 py-2">
+        <CardTitle className="text-lg font-bold">Stock Balance</CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-0 pb-2">
         <div className="grid grid-cols-2 gap-6">
           <div className="space-y-4">
             <div className="flex items-center space-x-2">
-              <CheckCircle className="h-6 w-6 text-green-500" />
-              <span className="text-lg font-semibold">Yes</span>
+              <span className="text-base font-semibold">Yes</span>
             </div>
-            <div className="pl-8 space-y-2">
+            <div className="space-y-2">
               <p className="text-sm text-muted-foreground">
                 Quantity:{" "}
                 <span className="font-medium text-foreground">
@@ -316,7 +319,6 @@ function StockBalance({ stockBalance }: { stockBalance: StockBalanceType }) {
                 </span>
               </p>
               <p className="text-sm text-muted-foreground flex items-center">
-                <Lock className="h-4 w-4 mr-1 text-orange-500" />
                 Locked:{" "}
                 <span className="font-medium text-foreground ml-1">
                   {stockBalance.yes?.locked}
@@ -326,10 +328,9 @@ function StockBalance({ stockBalance }: { stockBalance: StockBalanceType }) {
           </div>
           <div className="space-y-4">
             <div className="flex items-center space-x-2">
-              <XCircle className="h-6 w-6 text-red-500" />
-              <span className="text-lg font-semibold">No</span>
+              <span className="text-base font-semibold">No</span>
             </div>
-            <div className="pl-8 space-y-2">
+            <div className="space-y-2">
               <p className="text-sm text-muted-foreground">
                 Quantity:{" "}
                 <span className="font-medium text-foreground">
@@ -337,7 +338,6 @@ function StockBalance({ stockBalance }: { stockBalance: StockBalanceType }) {
                 </span>
               </p>
               <p className="text-sm text-muted-foreground flex items-center">
-                <Lock className="h-4 w-4 mr-1 text-orange-500" />
                 Locked:{" "}
                 <span className="font-medium text-foreground ml-1">
                   {stockBalance?.no?.locked}

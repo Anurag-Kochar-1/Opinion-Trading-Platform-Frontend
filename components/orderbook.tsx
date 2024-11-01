@@ -89,13 +89,20 @@ export const Orderbook: React.FC = () => {
   }, [status]);
 
   return (
-    <Card className="w-full max-w-4xl p-4">
+    <Card className="w-full p-4">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-lg font-semibold">Order Book</h2>
-        <Badge className={cn( `hover:${statusBadgeBackgroundColor}/100`, statusBadgeBackgroundColor)}>{status}</Badge>
+        <Badge
+          className={cn(
+            `hover:${statusBadgeBackgroundColor}/100`,
+            statusBadgeBackgroundColor
+          )}
+        >
+          {status}
+        </Badge>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* YES side */}
         <div>
           <div className="grid grid-cols-2 mb-2 font-semibold text-sm border-b pb-2">
