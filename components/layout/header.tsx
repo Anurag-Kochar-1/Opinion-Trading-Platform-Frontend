@@ -72,11 +72,11 @@ export const Header = () => {
         </Link>
       ) : null}
 
-      {!hasUserIdHydrated ? (
-        <Skeleton className="w-24 h-9" />
+      {!hasUserIdHydrated  ? (
+        <Skeleton className="w-full lg:w-24 h-9" />
       ) : user?.statusCode === 200 ? (
         isUserBalanceLoading ? (
-          <Skeleton className="w-24 h-9" />
+          <Skeleton className="w-full lg:w-24 h-9" />
         ) : isUserBalanceError ? (
           userBalanceError?.message
         ) : (
@@ -141,7 +141,7 @@ export const Header = () => {
             </SheetTrigger>
             <SheetContent>
               <SheetHeader>
-                <SheetTitle>Menu</SheetTitle>
+                <SheetTitle>Hey there 👋</SheetTitle>
               </SheetHeader>
               <div className="mt-6">
                 <NavigationContent isMobile={true} />

@@ -38,7 +38,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           className="max-w-sm"
         />
         <p className="font-semibold text-lg md:text-2xl max-w-sm text-center">
-          Our {failureReason} is down. Please try again in a few hours.
+          Our {failureReason} is down. Please try again later.
         </p>
       </div>
     );

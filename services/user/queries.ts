@@ -27,11 +27,11 @@ export const useUser = () => {
 }
 
 export const useOrderbookByStockSymbol = ({ stockSymbol }: { stockSymbol: string }) => {
-    const userId = useStore((state) => state.userId)
+    // const userId = useStore((state) => state.userId)
     return useQuery({
         queryKey: ['ORDERBOOK', { stockSymbol }],
         queryFn: () => getOrderBookByStockSymbol({ stockSymbol }),
-        enabled: !!userId && !!stockSymbol,
+        enabled: !!stockSymbol,
     })
 }
 

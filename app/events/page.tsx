@@ -39,16 +39,6 @@ export default function StockSymbolsPage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {stockSymbolsError ? (
-            <Alert variant="destructive" className="col-span-full">
-              <AlertCircle className="h-4 w-4" />
-              <AlertTitle>Error</AlertTitle>
-              <AlertDescription>
-                Failed to load stock symbols. Please try again later.
-              </AlertDescription>
-            </Alert>
-          ) : null}
-
           {isStockSymbolsLoading ? (
             Array.from({ length: 8 }).map((_, index) => (
               <Card key={index} className="relative">
@@ -63,6 +53,17 @@ export default function StockSymbolsPage() {
                 </CardContent>
               </Card>
             ))
+          ) : stockSymbolsError ? (
+            <Alert
+              variant="destructive"
+              className="col-span-full lg:col-span-2"
+            >
+              <AlertCircle className="h-4 w-4" />
+              <AlertTitle>Error</AlertTitle>
+              <AlertDescription>
+                Failed to load stock symbols. Please try again later.
+              </AlertDescription>
+            </Alert>
           ) : !hasData ? (
             <div className="col-span-full">
               <EmptyState
@@ -81,10 +82,7 @@ export default function StockSymbolsPage() {
                 >
                   <Card className="relative h-full transition-all duration-300 group-hover:shadow-lg group-hover:-translate-y-1 border-2 group-hover:border-primary/20">
                     <CardContent className="p-6">
-                      <div className="flex items-center justify-between mb-4">
-                        <h2 className="text-xl font-semibold group-hover:text-primary transition-colors">
-                          {title}
-                        </h2>
+                      <div className="flex items-start gap-4 flex-col justify-start mb-4">
                         {index < 3 && stock.totalOrders >= ACTIVE_THRESHOLD && (
                           <Badge
                             variant="default"
@@ -93,6 +91,9 @@ export default function StockSymbolsPage() {
                             Most Active
                           </Badge>
                         )}
+                        <h2 className="text-xl font-semibold group-hover:text-primary transition-colors">
+                          {title}
+                        </h2>
                       </div>
 
                       <div className="flex items-center gap-2 text-muted-foreground mb-3">
@@ -114,8 +115,6 @@ export default function StockSymbolsPage() {
               );
             })
           )}
-
-       
         </div>
       </div>
     </div>

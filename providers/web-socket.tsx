@@ -151,9 +151,9 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (orderBookData?.statusType === "SUCCESS") {
-      if (isUserLoading || isOrderBookDataLoading) return;
+      if (isOrderBookDataLoading) return;
 
-      if (user?.statusCode === 200 || orderBookData.statusCode === 200) {
+      if (orderBookData.statusCode === 200) {
         setMessages((prev) => [...prev, orderBookData.data!]);
       }
     }

@@ -29,6 +29,9 @@ const queryClient = new QueryClient({
         }
       },
     },
+    queries: {
+      retry: false,
+    },
   },
 });
 export const TanstackQueryClientProvider = ({

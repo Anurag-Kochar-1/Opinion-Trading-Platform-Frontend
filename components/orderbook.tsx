@@ -4,6 +4,11 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useWebSocket } from "@/providers/web-socket";
 import { cn } from "@/lib/utils";
+import { useOrderbookByStockSymbol } from "@/services/user/queries";
+import { useParams } from "next/navigation";
+import { Skeleton } from "./ui/skeleton";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Frown } from "lucide-react";
 
 const PriceLevel: React.FC<{
   price: number;
@@ -32,8 +37,9 @@ const PriceLevel: React.FC<{
 };
 
 export const Orderbook: React.FC = () => {
+  const { id } = useParams();
+  const stockId = id.toString();
   const { messages, status } = useWebSocket();
-
   const currentData = useMemo(() => {
     if (!messages.length) {
       return { yes: {}, no: {} };
@@ -80,13 +86,34 @@ export const Orderbook: React.FC = () => {
       case "Connected":
         return "bg-green-700";
       case "Connecting...":
-        return "bg-amber-700";
+        return "bg-blue-700";
       case "Error Occurred":
         return "bg-red-700";
       default:
         return "bg-black";
     }
   }, [status]);
+
+  const { isLoading: isOrderBookDataLoading, isError: isOrderBookDataError } =
+    useOrderbookByStockSymbol({
+      stockSymbol: stockId,
+    });
+
+  if (isOrderBookDataLoading) {
+    return <Skeleton className="w-full min-h-72 rounded-lg" />;
+  }
+
+  if (isOrderBookDataError) {
+    return (
+      <Alert className="w-full" variant={"destructive"}>
+        <Frown className="h-4 w-4" />
+        <AlertTitle>Something Went Wrong!</AlertTitle>
+        <AlertDescription>
+          Error Occured while loading orderbook data!
+        </AlertDescription>
+      </Alert>
+    );
+  }
 
   return (
     <Card className="w-full p-4">

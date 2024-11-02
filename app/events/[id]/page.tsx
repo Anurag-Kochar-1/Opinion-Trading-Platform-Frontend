@@ -7,6 +7,7 @@ import { useParams } from "next/navigation";
 import { LogIn } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useStore } from "@/store";
+import { Button } from "@/components/ui/button";
 
 function Page() {
   const {
@@ -16,6 +17,7 @@ function Page() {
     error: userError,
   } = useUser();
   const hasUserIdHydrated = useStore((state) => state.hasUserIdHydrated);
+  const setIsSignUpModalOpen = useStore((state) => state.setIsSignUpModalOpen);
   const { id } = useParams();
   return (
     <div className="container mx-auto p-4 min-h-screen">
@@ -41,7 +43,8 @@ function Page() {
                 <LogIn className="h-4 w-4" />
                 <AlertTitle>Sign Up Required!</AlertTitle>
                 <AlertDescription>
-                  Please create an account to start trading!
+                  <p>Please create an account to start trading!</p>
+                  <Button size={"lg"} className="mt-4 w-full md:max-w-max" onClick={() => setIsSignUpModalOpen(true)}> Sign Up </Button>
                 </AlertDescription>
               </Alert>
             )}
