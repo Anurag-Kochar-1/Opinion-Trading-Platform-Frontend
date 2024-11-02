@@ -16,6 +16,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { redirect } from "next/navigation";
 
 export const Header = () => {
   const queryClient = useQueryClient();
@@ -35,17 +36,22 @@ export const Header = () => {
     error: userBalanceError,
   } = useUserBalance();
 
-  const { data: user, isLoading: isUserLoading } = useUser();
+  const {
+    data: user,
+    isLoading: isUserLoading,
+    isError: isUserError,
+  } = useUser();
 
   const logOut = () => {
     removeUserId();
     queryClient.removeQueries({ queryKey: ["USER_BALANCE"] });
     queryClient.removeQueries({ queryKey: ["USER"] });
+    redirect("/");
   };
 
   useEffect(() => {
     if (isUserLoading) return;
-    if (user?.statusCode === 404) {
+    if (user?.statusCode === 404 || isUserError) {
       removeUserId();
       toast({ title: "Logged out!" });
     }
@@ -76,7 +82,12 @@ export const Header = () => {
         ) : (
           <div className="px-4 py-2 bg-muted flex justify-center items-center gap-2">
             <Wallet size={15} />
-            <span>₹ {userBalance?.data?.balance ? userBalance?.data?.balance / 100 : "-"}</span>
+            <span>
+              ₹{" "}
+              {userBalance?.data?.balance
+                ? userBalance?.data?.balance / 100
+                : "-"}
+            </span>
           </div>
         )
       ) : (
