@@ -44,6 +44,7 @@ export const metadata: Metadata = {
     description:
       "Explore diverse stock symbols and participate in market predictions. Your opinion could be the next winning trade.",
   },
+  metadataBase: new URL("https://probo.anuragkochar.com/")
 };
 
 export default function RootLayout({

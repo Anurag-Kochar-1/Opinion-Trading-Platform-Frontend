@@ -77,12 +77,14 @@ const Page = () => {
 
               return (
                 <Card key={stockName} className="shadow-lg">
-                  <CardHeader className="flex flex-row items-center justify-start gap-4">
-                    <CardTitle className="text-xl mt-2">{stockName}</CardTitle>
+                  <CardHeader className="flex items-start justify-start gap-4 flex-row">
+                    <CardTitle className="text-xl">
+                      {stockName?.split("_").join(" ")}
+                    </CardTitle>
+
                     <Link href={`/events/${stockName}`}>
                       <ExternalLink size={15} />
                     </Link>
-
                     {false && (
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
