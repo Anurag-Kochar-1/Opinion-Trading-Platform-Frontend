@@ -14,23 +14,15 @@ import { Separator } from "@/components/ui/separator";
 const ACTIVE_THRESHOLD = 5;
 
 export default function StockSymbolsPage() {
-  const { data, isLoading, error, refetch, isRefetching } =
-    useAllStockSymbolsQuery();
+  const {
+    data: stockSymbols,
+    isLoading: isStockSymbolsLoading,
+    error: stockSymbolsError,
+    refetch: refetchStockSymbols,
+    isRefetching: isStockSymbolsRefetching,
+  } = useAllStockSymbolsQuery();
 
-  if (error) {
-    return (
-      <div className="container mx-auto py-8 px-4 min-h-screen">
-        <Alert variant="destructive">
-          <AlertCircle className="h-4 w-4" />
-          <AlertTitle>Error</AlertTitle>
-          <AlertDescription>
-            Failed to load stock symbols. Please try again later.
-          </AlertDescription>
-        </Alert>
-      </div>
-    );
-  }
-  const hasData = data?.data && data.data.length > 0;
+  const hasData = stockSymbols?.data && stockSymbols.data.length > 0;
 
   return (
     <div>
@@ -42,12 +34,12 @@ export default function StockSymbolsPage() {
         <div className="flex items-center justify-between mb-8">
           <h2 className="text-2xl font-semibold">Available Markets</h2>
           <Badge variant="outline" className="text-sm hidden sm:block">
-            {data?.data!.length || 0} Markets Available
+            {stockSymbols?.data!.length || 0} Markets Available
           </Badge>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {isLoading ? (
+          {isStockSymbolsLoading ? (
             Array.from({ length: 8 }).map((_, index) => (
               <Card key={index} className="relative">
                 <CardContent className="p-6">
@@ -63,10 +55,13 @@ export default function StockSymbolsPage() {
             ))
           ) : !hasData ? (
             <div className="col-span-full">
-              <EmptyState refetch={refetch} isRefetching={isRefetching} />
+              <EmptyState
+                refetch={refetchStockSymbols}
+                isRefetching={isStockSymbolsRefetching}
+              />
             </div>
           ) : (
-            data?.data!.map((stock, index) => {
+            stockSymbols?.data!.map((stock, index) => {
               const title = stock.symbol.split("_").join(" ");
               return (
                 <Link
@@ -109,6 +104,16 @@ export default function StockSymbolsPage() {
               );
             })
           )}
+
+          {stockSymbolsError ? (
+            <Alert variant="destructive" className="w-full">
+              <AlertCircle className="h-4 w-4" />
+              <AlertTitle>Error</AlertTitle>
+              <AlertDescription>
+                Failed to load stock symbols. Please try again later.
+              </AlertDescription>
+            </Alert>
+          ) : null}
         </div>
       </div>
     </div>
