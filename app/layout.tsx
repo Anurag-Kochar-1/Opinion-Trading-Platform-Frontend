@@ -56,7 +56,7 @@ export default function RootLayout({
       <TanstackQueryClientProvider>
         <WebSocketProvider>
           <body
-            className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen`}
+            className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}
           >
             <Header />
             {children}
