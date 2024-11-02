@@ -30,7 +30,7 @@ function Page() {
           </div>
 
           <div className="w-full col-span-full lg:col-span-3 xl:col-span-2">
-            {!hasUserIdHydrated || isUserLoading ? (
+            {!hasUserIdHydrated || isUserLoading  || true ? (
               <Skeleton className="w-full min-h-44" />
             ) : isUserError ? (
               userError?.message

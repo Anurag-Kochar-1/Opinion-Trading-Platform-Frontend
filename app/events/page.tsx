@@ -39,6 +39,16 @@ export default function StockSymbolsPage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {stockSymbolsError ? (
+            <Alert variant="destructive" className="col-span-full">
+              <AlertCircle className="h-4 w-4" />
+              <AlertTitle>Error</AlertTitle>
+              <AlertDescription>
+                Failed to load stock symbols. Please try again later.
+              </AlertDescription>
+            </Alert>
+          ) : null}
+
           {isStockSymbolsLoading ? (
             Array.from({ length: 8 }).map((_, index) => (
               <Card key={index} className="relative">
@@ -105,15 +115,7 @@ export default function StockSymbolsPage() {
             })
           )}
 
-          {stockSymbolsError ? (
-            <Alert variant="destructive" className="w-full">
-              <AlertCircle className="h-4 w-4" />
-              <AlertTitle>Error</AlertTitle>
-              <AlertDescription>
-                Failed to load stock symbols. Please try again later.
-              </AlertDescription>
-            </Alert>
-          ) : null}
+       
         </div>
       </div>
     </div>
