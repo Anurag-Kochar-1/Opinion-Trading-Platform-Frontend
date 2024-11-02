@@ -43,8 +43,10 @@ export const metadata: Metadata = {
     title: "Opinions Trading",
     description:
       "Explore diverse stock symbols and participate in market predictions. Your opinion could be the next winning trade.",
+    siteName: "Opinions Trading",
+    url: new URL("https://probo.anuragkochar.com/"),
   },
-  metadataBase: new URL("https://probo.anuragkochar.com/")
+  metadataBase: new URL("https://probo.anuragkochar.com/"),
 };
 
 export default function RootLayout({
